@@ -20,36 +20,6 @@ class Workbook:
     __reviewerData['r2'] = {}
     __contentCreatorData = {}
 
-    def __init__(self, wkbname):
-        self.wkbname = wkbname
-        logging.info(f'Processing {wkbname}')
-        self.__wkb = Workbook.__gc.open(wkbname)
-
-    def addSheet(self,*args):
-        if not hasattr(self,'sheets'):
-            self.sheets = []
-        for idx in args:
-            self.sheets.append(idx)
-        logging.info(f'Sheets {self.sheets} added')
-
-    def extractData(self):
-        # self.reviewerData = {}
-        # self.reviewerData['r1'] = {}
-        # self.reviewerData['r2'] = {}
-        # self.contentCreatorData = {}
-        for i in tqdm(range(maxsheets)):
-            try:
-                data = self.__wkb.get_worksheet(i).get_all_values()
-                wks = Worksheet(data, Workbook.__contentCreatorData, Workbook.__reviewerData)
-                wks.updateCreatorDict()
-                wks.updateReviewerDict()
-            except Exception as e:
-                logging.warn(str(e) + f" for sheet{i} in Workbook: {self.wkbname}")
-
-        # logging.info(self.contentCreatorData)
-        # logging.info(self.reviewerData['r1'])
-        # logging.info(self.reviewerData['r2'])
-    
     @classmethod
     def logReworkInfo(cls):
         for key,value in Workbook.__contentCreatorData.items():
@@ -61,7 +31,6 @@ class Workbook:
             logging.info(f"$$Content_Creator: {key}, $$Rework 1 Submitted: {value.rwk_sub_1}")
             logging.info(f"$$Content_Creator: {key}, $$Rework 2 Assigned: {value.rwk2}")
             logging.info(f"$$Content_Creator: {key}, $$Rework 2 Submitted: {value.rwk_sub_2}")
-
 
     @classmethod
     def writeToCsv(cls):
@@ -101,3 +70,23 @@ class Workbook:
                 logging.warn(e)
             f.close()
         return val
+
+    def __init__(self, wkbname):
+        self.wkbname = wkbname
+        logging.info(f'Processing {wkbname}')
+        self.__wkb = Workbook.__gc.open(wkbname)
+
+    def extractData(self):
+        for i in tqdm(range(maxsheets)):
+            try:
+                data = self.__wkb.get_worksheet(i).get_all_values()
+                wks = Worksheet(data, Workbook.__contentCreatorData, Workbook.__reviewerData)
+                wks.updateCreatorDict()
+                wks.updateReviewerDict()
+            except Exception as e:
+                logging.warn(str(e) + f" for sheet{i} in Workbook: {self.wkbname}")
+
+        # logging.info(self.contentCreatorData)
+        # logging.info(self.reviewerData['r1'])
+        # logging.info(self.reviewerData['r2'])
+    

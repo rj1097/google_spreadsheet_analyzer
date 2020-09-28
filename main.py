@@ -4,10 +4,8 @@ from config import *
 from time import sleep
 
 def main():
-    # logging.info("This is a info message")
-    for w in workbooks[1:2]:
+    for w in workbooks:
         wkb = Workbook(w)
-        # wkb.addSheet(0)
         wkb.extractData()
 
     wkb.writeToCsv()

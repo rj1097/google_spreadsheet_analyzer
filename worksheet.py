@@ -51,16 +51,6 @@ class Worksheet:
                         self.__rwk2Col = i
                         # logging.info(f"Rework 1 Column index:{i}")
                     
-    def __initializeCreatorDict(self):
-        self.__creators = []
-        for creator in set(self.__df[self.__cNameCol]):
-            if (creator != '') and (creator.isdigit() == False) and creator != self.__columnsList[self.__cNameCol] and "sent" not in creator.lower():
-                self.__creators.append(creator)
-                key = creator.lower().strip(" ").strip("/")
-                if key not in self.__creatorDict:
-                    self.__creatorDict[key] = Cdata(creator)
-        logging.info(f"Creators list : {self.__creators}")
-
     def __generateReviewerKey(self, r):
         temp = r.strip('/').lower()
         temp = temp.replace("correct","@correct")
@@ -75,39 +65,6 @@ class Worksheet:
                     name = ''
 
         return name.lower()
-
-    def __helperReviewerInit(self, df_r, rKey):
-        if rKey == 'r1':
-            statusCol = self.__r1StatusCol
-        else:
-            statusCol = self.__r2StatusCol
-        for r in set(df_r):
-            if self.__columnsList[statusCol] not in r:
-                self.__reviewers[rKey].append(r)
-                key = self.__generateReviewerKey(r)
-                if key not in self.__reviewerDict[rKey]:
-                    self.__reviewerDict[rKey][key] = Rdata(r)
-
-    def __initializeReviewerDict(self):
-        self.__reviewers = {}
-        self.__reviewers['r1'] = []
-        self.__reviewers['r2'] = []
-
-        if self.__r2Col != -1:
-            df_r2 = self.__df[self.__r2Col] + '/' + self.__df[self.__r2StatusCol]
-        else:
-            df_r2 = self.__df[self.__r2StatusCol]
-
-        if self.__r1Col != -1:
-            df_r1 = self.__df[self.__r1Col] + '/' + self.__df[self.__r1StatusCol]
-        else:
-            df_r1 = self.__df[self.__r1StatusCol]
-
-        self.__helperReviewerInit(df_r2,'r2')
-
-        self.__helperReviewerInit(df_r1,'r1')
-        logging.info(f"Reviewer 1 list : {self.__reviewerDict['r1']}")
-        logging.info(f"Reviewer 2 list : {self.__reviewerDict['r2']}")
 
     def updateCreatorDict(self):
         for index,row in self.__df.iterrows():
@@ -208,5 +165,3 @@ class Worksheet:
         self.__intializeColumns()
         if self.__cNameCol == -1:
             raise ValueError("Invalid sheet")
-        # self.__initializeCreatorDict()
-        # self.__initializeReviewerDict()
