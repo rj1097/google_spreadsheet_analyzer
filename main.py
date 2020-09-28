@@ -7,7 +7,7 @@ def main():
     for w in workbooks:
         wkb = Workbook(w)
         wkb.extractData()
-
+        # time.sleep(110)
     wkb.writeToCsv()
 
 

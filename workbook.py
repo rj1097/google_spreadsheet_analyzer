@@ -23,10 +23,10 @@ class Workbook:
     @classmethod
     def logReworkInfo(cls):
         for key,value in Workbook.__contentCreatorData.items():
-            value.rwk1_added = value.rwk1 - cls.updateReworkStatus(key,1,"Assigned")
-            value.rwk1_submitted = value.rwk_sub_1 - cls.updateReworkStatus(key,1,"Submitted")
-            value.rwk2_added = value.rwk2 - cls.updateReworkStatus(key,2,"Assigned")
-            value.rwk2_submitted = value.rwk_sub_2 - cls.updateReworkStatus(key,2,"Submitted")
+            value.rwk1_added = value.rwk1 - Workbook.lastReworkCount(key,1,"Assigned")
+            value.rwk1_submitted = value.rwk_sub_1 - Workbook.lastReworkCount(key,1,"Submitted")
+            value.rwk2_added = value.rwk2 - Workbook.lastReworkCount(key,2,"Assigned")
+            value.rwk2_submitted = value.rwk_sub_2 - Workbook.lastReworkCount(key,2,"Submitted")
             logging.info(f"$$Content_Creator: {key}, $$Rework 1 Assigned: {value.rwk1}")
             logging.info(f"$$Content_Creator: {key}, $$Rework 1 Submitted: {value.rwk_sub_1}")
             logging.info(f"$$Content_Creator: {key}, $$Rework 2 Assigned: {value.rwk2}")
@@ -37,14 +37,14 @@ class Workbook:
         cls.logReworkInfo()
         contentCreatorDict = {k:dict(v) for k,v in Workbook.__contentCreatorData.items()}
         contentCreatorDf = pd.DataFrame(contentCreatorDict).transpose()
-        logging.info(contentCreatorDict)
+        # logging.info(contentCreatorDict)
         del contentCreatorDf['Entry']
         contentCreatorDf.to_csv("content-creatorData.csv")
 
         reviewer1Dict = {k:dict(v) for k,v in Workbook.__reviewerData['r1'].items()}
         reviewer2Dict = {k:dict(v) for k,v in Workbook.__reviewerData['r2'].items()}
-        logging.info(reviewer1Dict)
-        logging.info(reviewer2Dict)
+        # logging.info(reviewer1Dict)
+        # logging.info(reviewer2Dict)
         reviewerDf = pd.DataFrame(reviewer2Dict).transpose()
         reviewerDf["Reviewer"] = "Reviewer 2"
         reviewer1Df = pd.DataFrame(reviewer1Dict).transpose()
@@ -54,8 +54,8 @@ class Workbook:
         del reviewerDf["Entry"]
         reviewerDf.to_csv("reviewerData.csv")
 
-    @classmethod
-    def updateReworkStatus(cls,name,rwk,verb):
+    @staticmethod
+    def lastReworkCount(name,rwk,verb):
         val = 0
         with open('_log.log', 'r', encoding="utf-8") as f:
             contents = f.read()
