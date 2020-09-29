@@ -68,16 +68,20 @@ class Cdata:
     
     @classmethod
     def checkRwk1(cls,val):
+        val = val.strip('-')
         return val != ''
     
     @classmethod
     def checkRwk1Sub(cls,val):
+        val = val.strip('-')
         return val != ''
 
     @classmethod
     def checkRwk2(cls,val):
+        val = val.strip('-')
         return val != ''
 
     @classmethod
     def checkRwk2Sub(cls,val):
+        val = val.strip('-')
         return val != ''
